@@ -1,7 +1,7 @@
 import string
+import os
 from dawg import Dawg
 from chunk import Chunk, WordPoint
-
 
 class Token:
     def __init__(self, text):
@@ -10,12 +10,15 @@ class Token:
     def __str__(self):
         return repr(self.text)
 
+__location__ = os.path.realpath(os.path.join(
+    os.getcwd(), os.path.dirname(__file__)))
 
 class StdTokenizer:
-    def __init__(self, file_name=None):
+    def __init__(self, file_name=None):        
         self.dawg = Dawg()
         if file_name is None:
-            file_name = "./cwsharp.dawg"
+            file_name = os.path.join(__location__,"cwsharp.dawg")
+            
         with open(file_name, "rb") as f:
             self.dawg.load(f)
 
@@ -33,14 +36,14 @@ class StdTokenizer:
             word = char
             node = self.dawg.root.next(char)
             if node is None or node.hasChilds() is False:
-                word = self.normalTokenize(i, doc)
+                word = self._normalTokenize(i, doc)
             else:
-                word = self.mmsegTokenize(i, doc)
+                word = self._mmsegTokenize(i, doc)
             tokens.append(Token(word))
             i += len(word)
         return tokens
 
-    def normalTokenize(self, i, doc):
+    def _normalTokenize(self, i, doc):
         char = doc[i]
         if char.isdigit():
             return _scanNumber(i, doc)
@@ -48,20 +51,20 @@ class StdTokenizer:
             return _scanAlpha(i, doc)
         return char
 
-    def mmsegTokenize(self, position, doc):
-        nodes_1 = self.matchedNodes(position, doc)
+    def _mmsegTokenize(self, position, doc):
+        nodes_1 = self._matchedNodes(position, doc)
         if len(nodes_1) == 0:
-            return self.normalTokenize(position, doc)
+            return self._normalTokenize(position, doc)
 
         maxWordLength, offset = 0, 0
         chunks = []
         for i in range(len(nodes_1) - 1, -1, -1):
             offset_1 = offset + nodes_1[i].depth + 1
-            nodes_2 = self.matchedNodes(offset_1, doc)
+            nodes_2 = self._matchedNodes(offset_1, doc)
             if len(nodes_2) > 0:
                 for j in range(len(nodes_2) - 1, -1, -1):
                     offset_2 = offset_1 + nodes_2[j].depth + 1
-                    nodes_3 = self.matchedNodes(offset_2, doc)
+                    nodes_3 = self._matchedNodes(offset_2, doc)
                     if len(nodes_3) > 0:
                         for k in range(len(nodes_3) - 1, -1, -1):
                             offset_3 = offset_2 + nodes_3[k].depth + 1
@@ -93,20 +96,20 @@ class StdTokenizer:
                         offset, offset_1 - offset, nodes_1[i].freq)])
                     chunks.append(chunk)
 
-        chunk = self.selectChunk(chunks)
+        chunk = self._selectChunk(chunks)
         length = chunk.wordPoints[0].length
         word = doc[position:position + length]
         return word
 
-    def selectChunk(self, chunks):
+    def _selectChunk(self, chunks):
         c = chunks
-        filters = [lawl, svwl, lsdmfocw]
+        filters = [_lawl, _svwl, _lsdmfocw]
         for fn in filters:
             if len(c) > 1:
                 c = fn(c)
         return c[0]
 
-    def matchedNodes(self, i, doc):
+    def _matchedNodes(self, i, doc):
         nodes = []
         node = self.dawg.root
         for j in range(i, len(doc)):
@@ -119,7 +122,7 @@ class StdTokenizer:
         return nodes
 
 
-def lawl(chunks):
+def _lawl(chunks):
     max = 0.0
     b = chunks[:0]
     for c in chunks:
@@ -133,7 +136,7 @@ def lawl(chunks):
     return b
 
 
-def svwl(chunks):
+def _svwl(chunks):
     min = -1.0
     b = chunks[:0]
     for c in chunks:
@@ -147,7 +150,7 @@ def svwl(chunks):
     return b
 
 
-def lsdmfocw(chunks):
+def _lsdmfocw(chunks):
     max = 0.0
     b = chunks[:0]
     for c in chunks:
