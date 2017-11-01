@@ -7,18 +7,18 @@ class Dawg:
         self.root = None
 
     def contains(self, word=None):
-        if word is None or word == "":
+        if word is None or len(word)== 0:
             return False
 
-        nextNode = self.root.next(word[0])
+        node = self.root.get_next(word[0])
         for i in range(1, len(word)):
-            if nextNode is None:
+            if node is None:
                 break
-            nextNode = nextNode.next(word[i])
+            node = node.get_next(word[i])
 
-        return nextNode is not None and nextNode.eow
+        return node is not None and node.eow
 
-    def load(self, f=None):
+    def load(self, f=None):        
         self.version = struct.unpack("<f", f.read(4))[0]
         count = struct.unpack("<i", f.read(4))[0]
         nodes = [None] * count
@@ -37,7 +37,7 @@ class Dawg:
         root = Node()
         for i in range(count):
             j = struct.unpack("<i", f.read(4))[0]
-            root.addChild(nodes[j])
+            root.add(nodes[j])
 
         count = struct.unpack("<i", f.read(4))[0]
         for i in range(count):
@@ -46,7 +46,7 @@ class Dawg:
             childNodeCount = struct.unpack("<i", f.read(4))[0]
             for j in range(childNodeCount):
                 label = struct.unpack("<i", f.read(4))[0]
-                node.addChild(nodes[label])
+                node.add(nodes[label])
         self.root = root
 
 
@@ -73,7 +73,7 @@ class Dawg:
             else:
                 f.write(struct.pack("<b", 0))
             f.write(struct.pack("<i", len(node.childs)))
-            if node.hasChilds() is True:
+            if node.hasChildNodes() is True:
                 count += 1
 
         f.write(struct.pack("<i", len(self.root.childs)))
@@ -82,7 +82,7 @@ class Dawg:
             f.write(struct.pack("<i", label))
         f.write(struct.pack("<i", count))
         for node, label in nodeLabels.iteritems():
-            if node.hasChilds() is False:
+            if node.hasChildNodes() is False:
                 continue
             f.write(struct.pack("<i", label))
             f.write(struct.pack("<i", len(node.childs)))
@@ -99,22 +99,22 @@ class Node:
         self.eow = False
         self.parent = None
 
-    def addChild(self, node):
+    def add(self, node):
         if node.char in self.childs:
             return
         if node.parent is None:
             node.parent = self
         self.childs[node.char] = node
 
-    def removeChild(self, node):
+    def remove(self, node):
         if node.char not in self.childs:
             return
         del self.childs[node.char]
 
-    def next(self, char):
+    def get_next(self, char):
         return self.childs.get(char)
 
-    def hasChilds(self):
+    def hasChildNodes(self):
         return len(self.childs)
 
     def get_descendants(self, stack=None, include_self=False):
@@ -123,10 +123,3 @@ class Node:
         for node in self.childs.values():
             stack.append(node)
             node.get_descendants(stack, False)
-
-
-def load(file_name):
-    dawg = Dawg()
-    with open(file_name, "rb") as f:
-        dawg.load(f)
-    return dawg
