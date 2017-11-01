@@ -1,5 +1,5 @@
 import struct
-
+from builtins import chr
 
 class Dawg:
     def __init__(self):
@@ -24,7 +24,7 @@ class Dawg:
         nodes = [None] * count
         for i in range(count):
             node = Node()
-            node.char = unichr(struct.unpack("<H", f.read(2))[0])
+            node.char = chr(struct.unpack("<H", f.read(2))[0])
             node.freq = struct.unpack("<i", f.read(4))[0]
             node.depth = struct.unpack("<i", f.read(4))[0]
             if (struct.unpack("<b", f.read(1))[0]) == 1:
