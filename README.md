@@ -8,7 +8,16 @@ Python中文分词库,支持自定义词典和多种分词模式。
 - 支持多种分词算法。
   - `MMSegTokenizer` - 基于字典的分词算法，支持中英混合词组，中文分词准确率高。
   - `BigramTokenizer` - 二元分词，支持英文、数字。
-- [自定义字典](https://github.com/zhengchun/CWSharp/tree/master/data)
+
+- [自定义字典](https://github.com/zhengchun/CWSharp/tree/master/data)，支持中英文混合。
+
+- 兼容Python 2x/3x。
+
+安装
+===
+- `easy_install cwsharp` 或者 `pipe install cwsharp`
+- `pip3 install cwsharp` for Python 3
+
 
 快速入门
 ===
