@@ -6,16 +6,35 @@ except ImportError:
 
 LONGDOC = """
 cwsharp
-===
-Python中文分词库, 支持自定义词典和多种分词算法。
+========
+
+Python中文分词库, 支持自定义词典和多种分词算法. 
+
+GitHub: https://github.com/zhengchun/cwsharp-python
+
 
 特点
-===
-- 支持多种分词算法。
-  - MMSegTokenizer - 基于字典的分词算法，默认的分词算法。
-  - BigramTokenizer - 二元分词，支持英文、数字。
-- 自定义字典，支持中英文混合。
+========
+
+- 支持多种分词算法:
+
+    - MMSegTokenizer - 基于字典的分词算法，默认的分词算法.
+
+    - BigramTokenizer - 二元分词，支持英文、数字.
+
+- 自定义字典, 支持中英文混合.
+
+- 兼容Python 2x, 3x.
+
 - MIT协议
+
+
+安装说明
+========
+
+- 自动安装: ``easy_install cwsharp`` 或者 ``pipe install cwsharp``, ``pip3 install cwsharp``
+
+
 """
 
 setup(name='cwsharp',
