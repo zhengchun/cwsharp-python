@@ -1,4 +1,5 @@
-from tokenizer import MMSegTokenizer
+from __future__ import absolute_import
+from .tokenizer import MMSegTokenizer
 
 
 class _mmsegLazy():

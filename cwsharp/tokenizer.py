@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 import string
 import os
-from dawg import Dawg
-from chunk import Chunk, WordPoint
+from .dawg import Dawg
+from .chunk import Chunk, WordPoint
 
 _punctuation = string.whitespace + string.punctuation
 
