@@ -116,9 +116,11 @@ class MMSegTokenizer:
     def _matchs(self, i, doc):
         nodes = []
         node = self.dawg.root
-        for j in range(i, len(doc)):
-            char = doc[j]
-            node = node.get_next(char)
+        while True:
+            if i + 1 >= len(doc):
+                break
+            node = node.get_next(doc[i])
+            i += 1
             if node is None:
                 break
             if node.eow == 1:
