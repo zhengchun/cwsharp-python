@@ -19,11 +19,11 @@ class Chunk:
         return math.sqrt(s / len(self.wordPoints))
 
     def degree(self):
-        return sum(map(lambda wp: math.log10(float(wp.freq))))
+        return sum(map(lambda wp: math.log10(max(1, float(wp.freq))), self.wordPoints))
 
 
 class WordPoint:
     def __init__(self, offset, length, freq):
-        self.offset = offset
-        self.length = length
-        self.freq = freq
+        self.offset=offset
+        self.length=length
+        self.freq=freq
