@@ -34,11 +34,19 @@ GitHub: https://github.com/zhengchun/cwsharp-python
 
 - 自动安装: ``easy_install cwsharp`` 或者 ``pipe install cwsharp``, ``pip3 install cwsharp``
 
+Changelog
+========
+
+- [2017-11-10]
+
+    - MMSegTokenizer的分词性能提高20X。
+
+    - 修正chunk.degree()函数中word.freq为0的异常。
 
 """
 
 setup(name='cwsharp',
-      version='0.1',
+      version='0.2',
       description='Chinese Words Segementations',
       long_description=LONGDOC,
       author='zhengchun',
